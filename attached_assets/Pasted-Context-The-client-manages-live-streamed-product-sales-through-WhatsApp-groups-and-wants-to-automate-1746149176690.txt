@@ -1,0 +1,81 @@
+Context
+The client manages live-streamed product sales through WhatsApp groups and wants to automate the post-sale process. During lives, customers comment product references. The client manually adds the items to each customer's “bag” by name. The next day, the client sends each customer a summary including:
+
+The date of reservation
+
+A photo of each item with its price below
+
+The total amount including shipping
+
+A payment information image requesting shipping details and proof of payment
+After 1–2 days, they manually check each customer’s bag, confirm payment, pack the items, record shipment in Excel, and print the shipping label.
+
+Objective
+Build a responsive web app (or PWA) that simplifies product promotion and post-sale logistics. The platform must include both a user-facing interface (for clients) and a backoffice panel (for administrators).
+
+Functional Requirements
+
+Admin can:
+
+Create products with photo, price, reference code, and availability.
+
+Create a “live session” and quickly assign product references to clients.
+
+View client “bags” (reserved items).
+
+Generate a visual summary of items per client, including:
+
+Product photo
+
+Price per item
+
+Total + shipping fee
+
+Payment instructions
+
+Mark payments and update order statuses.
+
+Register shipment and generate a shipping label.
+
+Clients can:
+
+View their reserved products.
+
+Confirm payment and upload proof.
+
+Provide shipping address.
+
+Check order status: reserved → paid → shipped.
+
+Technical Stack (Recommended)
+
+Frontend: Next.js (React), Tailwind CSS
+Backend should be on the same Next.js environment using API routes with Prisma ORM and PostgreSQL db 
+
+Media Handling: Cloudinary or Firebase for images
+
+Export: html-to-image or puppeteer to generate product summary images
+
+Optional: Integration with WhatsApp Business API for sending post-sale summaries
+
+Deploy: Vercel (frontend), PostgreSQL SaaS
+
+Deliverables
+
+Monorepo with:
+
+apps/web – Web app with admin and client views
+
+packages/api – API with endpoints for products, orders, clients, payments
+
+scripts/image-generator.ts – Generates images with product details per client
+
+User documentation (admin and client sides)
+
+Payment confirmation flow with file upload
+
+Shipping registration and exportable delivery label
+
+GitHub Actions for CI/CD
+
+Sample database schema and Excel import script

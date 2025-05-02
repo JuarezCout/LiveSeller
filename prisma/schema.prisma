@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  isAdmin      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  cost        Float?
+  stock       Int         @default(0)
+  reference   String      @unique
+  imageUrl    String?
+  category    String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Client {
+  id             Int           @id @default(autoincrement())
+  name           String
+  email          String        @unique
+  phone          String?
+  passwordHash   String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  orders         Order[]
+  liveSessions   LiveSession[]
+  LiveSessionLog LiveSession[] @relation("LiveSessionAttendees")
+}
+
+model LiveSession {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String?
+  startDate     DateTime
+  endDate       DateTime?
+  status        String    @default("scheduled") // scheduled, active, completed, cancelled
+  hostId        Int?
+  host          Client?   @relation(fields: [hostId], references: [id])
+  attendees     Client[]  @relation("LiveSessionAttendees")
+  whatsappGroup String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orders        Order[]
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  clientId       Int
+  client         Client      @relation(fields: [clientId], references: [id])
+  liveSessionId  Int?
+  liveSession    LiveSession? @relation(fields: [liveSessionId], references: [id])
+  status         String      @default("pending") // pending, confirmed, processing, shipped, delivered, cancelled, refunded
+  total          Float
+  orderDate      DateTime    @default(now())
+  paymentStatus  String      @default("unpaid") // unpaid, paid, refunded
+  paymentMethod  String?
+  paymentProof   String?
+  shippingMethod String?
+  trackingNumber String?
+  shippingAddress Json?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  orderItems     OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  total     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
